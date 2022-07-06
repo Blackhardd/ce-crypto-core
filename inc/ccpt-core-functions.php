@@ -294,12 +294,12 @@ function ccpt_add_filter_query_params( $filter_name, $value, $link ){
  * @param string $link
  * @return string
  */
-function ccpt_add_pagination_query_params( $page_number, $link ){
+function ccpt_add_pagination_query_params( $page_number, $link, $name = 'page' ){
     if( $page_number > 1 ){
-        return add_query_arg( 'page', $page_number, $link );
+        return add_query_arg( $name, $page_number, $link );
     }
     
-    return remove_query_arg( 'page', $link );
+    return remove_query_arg( $name, $link );
 }
 
 
