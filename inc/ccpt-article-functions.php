@@ -367,6 +367,112 @@ function ccpt_is_course_in_progress( $user_id = 0, $course_id ){
 }
 
 
+/**
+ * Update article views.
+ * 
+ * @param string|integer $post_id
+ * @return boolean
+ */
+function ccpt_update_article_views( $post_id = 0 ){
+    if( $post_id === 0 )
+        $post_id = get_the_ID();
+
+    if( $post_id === false )
+        return false;
+
+    $views = get_post_meta( $post_id, 'ccpt_views', true );
+
+    $is_updated = false;
+
+    if( empty( $views ) ){
+        $is_updated = boolval( update_post_meta( $post_id, 'ccpt_views', 1 ) );
+    }
+    else{
+        $is_updated = boolval( update_post_meta( $post_id, 'ccpt_views', $views + 1 ) );
+    }
+
+    return $is_updated;
+}
+
+
+/**
+ * Get article views.
+ * 
+ * @param string|integer $post_id
+ * @return integer
+ */
+function ccpt_get_views( $post_id = 0 ){
+    if( $post_id === 0 )
+        $post_id = get_the_ID();
+
+    if( $post_id === false )
+        return false;
+
+    $views = get_post_meta( $post_id, 'ccpt_views', true );
+
+    return $views ? $views : 0;
+}
+
+
+/**
+ * Update article likes.
+ * 
+ * @param string|integer $post_id
+ * @return boolean
+ */
+function ccpt_update_article_likes( $post_id = 0 ){
+    if( $post_id === 0 )
+        $post_id = get_the_ID();
+
+    if( $post_id === false )
+        return false;
+
+    $likes = get_post_meta( $post_id, 'ccpt_likes', true );
+
+    $is_updated = false;
+
+    if( empty( $likes ) ){
+        $is_updated = boolval( update_post_meta( $post_id, 'ccpt_likes', 1 ) );
+    }
+    else{
+        $is_updated = boolval( update_post_meta( $post_id, 'ccpt_likes', $likes + 1 ) );
+    }
+
+    return $is_updated;
+}
+
+
+/**
+ * Get article likes.
+ * 
+ * @param string|integer $post_id
+ * @return integer
+ */
+function ccpt_get_likes( $post_id = 0 ){
+    if( $post_id === 0 )
+        $post_id = get_the_ID();
+
+    if( $post_id === false )
+        return false;
+
+    $likes = get_post_meta( $post_id, 'ccpt_likes', true );
+
+    return $likes ? $likes : 0;
+}
+
+
+// Add article post meta on creating article.
+
+add_action( 'save_post_article', 'ccpt_save_post_article', 10, 3 );
+
+function ccpt_save_post_article( $post_id, $post, $update ){
+    if( !$update ){
+        update_post_meta( $post_id, 'ccpt_views', 0 );
+        update_post_meta( $post_id, 'ccpt_likes', 0 );
+    }
+}
+
+
 // Add test select for article_category taxonomy terms.
 
 add_action( 'article_category_add_form_fields', 'ccpt_article_category_add_form_fields' );
@@ -417,6 +523,17 @@ function ccpt_save_article_category_fields( $term_id ){
 
     update_post_meta( $test_id, 'ccpt_course', $term_id );
     update_term_meta( $term_id, 'ccpt_category_test', $test_id );
+}
+
+
+// Increase views count
+
+add_action( 'wp', 'ccpt_increase_article_views' );
+
+function ccpt_increase_article_views(){
+    if( is_singular( 'article' ) && is_user_logged_in() ){
+        ccpt_update_article_views();
+    }
 }
 
 

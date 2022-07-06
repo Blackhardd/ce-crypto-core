@@ -26,7 +26,8 @@ class CCPT_AJAX {
             'save_profile',
             'facebook_auth',
             'contact',
-            'load_terms'
+            'load_terms',
+            'like_article'
         );
 
         foreach( $events as $event ){
@@ -176,6 +177,19 @@ class CCPT_AJAX {
                 'current_char'  => $current_char
             ) );
         endif;
+    }
+
+
+    public static function like_article(){
+        if( !empty( $_POST['post_id'] ) ){
+            $is_updated = ccpt_update_article_likes( $_POST['post_id'] );
+
+            if( $is_updated ){
+                ccpt_send_ajax_response( 'success' );
+            }
+        }
+
+        ccpt_send_ajax_response( 'failure' );
     }
 }
 
