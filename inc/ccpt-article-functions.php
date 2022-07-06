@@ -53,13 +53,9 @@ function ccpt_get_articles_category_query(){
         $args['meta_query'] = [
             array(
                 'key'       => '_reading_time',
-                'value'     => $values[0],
-                'compare'   => '>='
-            ),
-            array(
-                'key'   => '_reading_time',
-                'value'     => $values[1],
-                'compare'   => '<='
+                'value'     => $values,
+                'compare'   => 'BETWEEN',
+                'type'      => 'NUMERIC'
             )
         ];
     }
