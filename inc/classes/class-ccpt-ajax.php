@@ -93,6 +93,7 @@ class CCPT_AJAX {
             'full_name'     => $_POST['full_name'],
             'email'         => $_POST['email'],
             'phone'         => $_POST['phone'],
+            'password'      => $_POST['password'],
             'twitter'       => $_POST['twitter'],
             'telegram'      => $_POST['telegram']
         ) );

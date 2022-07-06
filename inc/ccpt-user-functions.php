@@ -102,6 +102,10 @@ function ccpt_update_profile( $user_id, $fields = array() ){
         $fields_to_update['email'] = $fields['email'];
     }
 
+    if( !empty( $fields['password'] ) ){
+        $fields_to_update['user_pass'] = $fields['password'];
+    }
+
     if( !empty( $fields['phone'] ) && $fields['phone'] !== $profile['phone'] ){
         update_user_meta( $user_id, 'ccpt_phone', $fields['phone'] );
     }
