@@ -429,3 +429,56 @@ function ccpt_maybe_unlock_test(){
         ccpt_unlock_test();
     }
 }
+
+
+// Articles archive filters query.
+
+add_action( 'pre_get_posts', 'ccpt_articles_archive_filters_query' );
+
+function ccpt_articles_archive_filters_query( $query ){
+    if( !is_admin() && isset( $query->query_vars['post_type'] ) && $query->query_vars['post_type'] === 'article' ){
+        if( isset( $_GET['page'] ) ){
+            $query->set( 'paged', $_GET['page'] );
+        }
+    
+        if( isset( $_GET['time'] ) ){
+            $values = json_decode( $_GET['time'] );
+    
+            $query->set( 'meta_query', [
+                array(
+                    'key'       => '_reading_time',
+                    'value'     => $values,
+                    'compare'   => 'BETWEEN',
+                    'type'      => 'NUMERIC'
+                )
+            ] );
+        }
+    
+        $tax_query_filters = [];
+    
+        if( isset( $_GET['theme'] ) ){
+            $tax_query_filters[] = array(
+                'taxonomy'  => 'article_tag',
+                'terms'     => explode( ',', $_GET['theme'] ),
+                'operator'  => 'IN',
+                'relation'  => 'OR'
+            );
+        }
+    
+        if( isset( $_GET['difficulty'] ) ){
+            $tax_query_filters[] = array(
+                'taxonomy'  => 'article_difficulty',
+                'terms'     => explode( ',', $_GET['difficulty'] ),
+                'operator'  => 'IN',
+                'relation'  => 'OR'
+            );
+        }
+    
+        if( count( $tax_query_filters ) ){
+            $query->set( 'tax_query', array(
+                'relation'  => 'AND',
+                $tax_query_filters
+            ) );
+        }
+    }
+}
