@@ -103,16 +103,14 @@ function ccpt_update_profile( $user_id, $fields = array() ){
     }
 
     if( !empty( $fields['phone'] ) && $fields['phone'] !== $profile['phone'] ){
-        // update_user_meta( $user_id, 'ccpt_phone' );
-
-        $fields_to_update['ccpt_phone'] = $fields['phone'];
+        update_user_meta( $user_id, 'ccpt_phone', $fields['phone'] );
     }
 
     if( !empty( $fields['twitter'] ) && $fields['twitter'] !== $profile['twitter'] )
-        update_user_meta( $user_id, 'ccpt_twitter_username', $fields['twitter'], true );
+        update_user_meta( $user_id, 'ccpt_twitter_username', $fields['twitter'] );
 
     if( !empty( $fields['telegram'] ) && $fields['telegram'] !== $profile['telegram'] )
-        update_user_meta( $user_id, 'ccpt_telegram_username', $fields['telegram'], true );
+        update_user_meta( $user_id, 'ccpt_telegram_username', $fields['telegram'] );
 
     return wp_update_user( $fields_to_update );
 }
