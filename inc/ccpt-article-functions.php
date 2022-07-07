@@ -552,7 +552,7 @@ function ccpt_maybe_unlock_test(){
 add_action( 'pre_get_posts', 'ccpt_articles_archive_filters_query' );
 
 function ccpt_articles_archive_filters_query( $query ){
-    if( !is_admin() && isset( $query->query_vars['post_type'] ) && $query->query_vars['post_type'] === 'article' ){
+    if( !is_admin() && isset( $query->query_vars['post_type'] ) && $query->query_vars['post_type'] === 'article' && $query->is_main_query() ){
         $query->set( 'meta_key', '_sticky_archive' );
 
         $query->set( 'orderby', array(
