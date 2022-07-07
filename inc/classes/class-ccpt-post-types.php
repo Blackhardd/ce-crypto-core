@@ -19,7 +19,6 @@ class CCPT_Post_Types {
     public static function init(){
         add_action( 'init', array( __CLASS__, 'register_post_types' ), 5 );
         add_action( 'init', array( __CLASS__, 'register_taxonomies' ), 5 );
-        // add_action( 'init', array( __CLASS__, 'register_post_statuses' ), 5 );
     }
 
 
@@ -221,43 +220,6 @@ class CCPT_Post_Types {
             'hierarchical'          => true,
             'public'                => true,
             'show_in_rest'          => true
-        ) );
-
-        register_taxonomy( 'article_difficulty', 'article', array(
-            'labels'                => array(
-                'name'                          => _x( 'Рівні важкості', 'Ім`я таксономії', 'ce-crypto' ),
-                'singular_name'                 => _x( 'Рівень важкості', 'Одиночне ім`я таксономії', 'ce-crypto' ),
-                'search_items'                  => __( 'Шукати Рівні важкості', 'ce-crypto' ),
-                'popular_items'                 => __( 'Популярні Рівні важкості', 'ce-crypto' ),
-                'all_items'                     => __( 'Всі Рівні важкості', 'ce-crypto' ),
-                'parent_item'                   => null,
-                'parent_item_colon'             => null,
-                'edit_item'                     => __( 'Редагувати Рівень важкості', 'ce-crypto' ), 
-                'update_item'                   => __( 'Оновити Рівень важкості', 'ce-crypto' ),
-                'add_new_item'                  => __( 'Додати новий Рівень важкості', 'ce-crypto' ),
-                'new_item_name'                 => __( 'Нове ім`я рівня важкості', 'ce-crypto' ),
-                'separate_items_with_commas'    => __( 'Розділіть рівні важкості комами', 'ce-crypto' ),
-                'add_or_remove_items'           => __( 'Додати або видалити рівні важкості', 'ce-crypto' ),
-                'choose_from_most_used'         => __( 'Обрати серед популярних рівнів важкості', 'ce-crypto' ),
-                'menu_name'                     => __( 'Рівні важкості', 'ce-crypto' )
-            ),
-            'hierarchical'          => true,
-            'public'                => true,
-            'show_in_rest'          => true
-        ) );
-    }
-
-
-    /**
-     * Register post statuses.
-     */
-    public static function register_post_statuses(){
-        register_post_status( 'ccpt-pinned', array(
-            'label'                     => _x( 'Закріплена', 'Статус статті', 'ce-crypto' ),
-            'public'                    => false,
-            'exclude_from_search'       => false,
-			'show_in_admin_all_list'    => true,
-			'show_in_admin_status_list' => true
         ) );
     }
 }

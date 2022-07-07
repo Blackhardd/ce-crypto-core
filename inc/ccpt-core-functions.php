@@ -100,17 +100,6 @@ function cctp_get_article_query_object( $numberposts = 10 ){
 
 
 /**
- * Get query object of a test post type.
- * 
- * @param int $numberposts
- * @return WP_Query
- */
-function cctp_get_test_query_object( $numberposts = 10 ){
-    return cctp_get_post_query_object( 'test', $numberposts );
-}
-
-
-/**
  * Get query object of a terms post type.
  * 
  * @param int $numberposts
@@ -190,23 +179,6 @@ function ccpt_send_ajax_response( $status, $message = '', $data = array() ){
     ) );
     
     wp_die();
-}
-
-
-/**
- * Get AJAX post data.
- * 
- * @return string[]
- */
-function ccpt_get_ajax_post_data(){
-    $data = array();
-
-    foreach( $_POST as $key => $value ){
-        if( $key !== 'action' )
-            $data[$key] = $value;
-    }
-
-    return $data;
 }
 
 
@@ -368,6 +340,54 @@ function ccpt_get_course_status_title( $status ){
         return false;
 
     return $statuses[$status];
+}
+
+
+/**
+ * Get course difficulties.
+ * 
+ * @return string[]
+ */
+function ccpt_get_difficulties(){
+    return array(
+        'beginner'      => __( 'Beginner', 'ce-crypto' ),
+        'intermediate'  => __( 'Intermediate', 'ce-crypto' ),
+        'advanced'      => __( 'Advanced', 'ce-crypto' )
+    );
+}
+
+
+/**
+ * Get course difficulty choices.
+ * 
+ * @return string[]
+ */
+function ccpt_get_difficulty_choices(){
+    $difficulties = ccpt_get_difficulties();
+
+    $difficulties = array_merge( array( '' => __( 'Оберіть важкість' ) ), $difficulties );
+
+    return $difficulties;
+}
+
+
+/**
+ * Get course difficulty options HTML.
+ * 
+ * @return string
+ */
+function ccpt_get_difficulty_options_html( $value = false ){
+    $difficulties = ccpt_get_difficulty_choices();
+
+    $html = '';
+
+    foreach( $difficulties as $slug => $title ){
+        $is_selected = $value && $slug === $value ? 'selected' : '';
+
+        $html .= "<option value='{$slug}' {$is_selected}>{$title}</option>";
+    }
+
+    return $html;
 }
 
 

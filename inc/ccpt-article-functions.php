@@ -284,16 +284,30 @@ function ccpt_get_article_categories( $hide_empty = true, $supress_filters = tru
     );
 
     if( !$supress_filters ){
+        $meta_query = [];
+
         if( !empty( $_GET['theme'] ) ){
             $themes = array_map( 'intval', explode( ',', $_GET['theme'] ) );
 
-            $args['meta_query'] = [
-                array(
-                    'key'       => 'ccpt_themes',
-                    'value'     => $themes,
-                    'compare'   => 'IN'
-                )
-            ];
+            $meta_query[] =  array(
+                'key'       => 'ccpt_themes',
+                'value'     => $themes,
+                'compare'   => 'IN'
+            );
+        }
+
+        if( !empty( $_GET['difficulty'] ) ){
+            $difficulties = explode( ',', $_GET['difficulty'] );
+
+            $meta_query[] = array(
+                'key'       => 'ccpt_course_difficulty',
+                'value'     => $difficulties,
+                'compare'   => 'IN'
+            );
+        }
+
+        if( count( $meta_query ) ){
+            $args['meta_query'] = $meta_query;
         }
     }
 
@@ -336,20 +350,6 @@ function ccpt_get_all_article_tags(){
 
 
 /**
- * Get all article difficulties.
- * 
- * @return WP_Term[]
- */
-function ccpt_get_all_article_difficulties(){
-    $args = array(
-        'taxonomy'      => 'article_difficulty'
-    );
-
-    return get_terms( $args );
-}
-
-
-/**
  * Get article category.
  * 
  * @param string|integer $article_id
@@ -382,7 +382,7 @@ function ccpt_get_article_category_name( $term_id ){
 function ccpt_get_article_category_test( $post_id ){
     $terms = get_the_terms( $post_id, 'article_category' );
 
-    if( $test_id = get_term_meta( $terms[0]->term_id, 'ccpt_category_test', true ) ){
+    if( $test_id = get_term_meta( $terms[0]->term_id, 'ccpt_course_test', true ) ){
         return intval( $test_id );
     }
 
@@ -570,9 +570,16 @@ function ccpt_article_category_add_form_fields( $taxonomy ){
     ?>
 
     <div class="form-field">
-        <label for="category-test"><?=__( 'Тест категорії', 'ce-crypto' ); ?></label>
-        <select name="category_test" id="category-test" style="width: 100%;">
+        <label for="course-test"><?=__( 'Тест', 'ce-crypto' ); ?></label>
+        <select name="course_test" id="course-test" style="width: 100%;">
             <?=ccpt_get_test_options_html(); ?>
+        </select>
+    </div>
+
+    <div class="form-field">
+        <label for="course-difficulty"><?=__( 'Рівень важкості', 'ce-crypto' ); ?></label>
+        <select name="course_difficulty" id="course-difficulty" style="width: 100%;">
+            <?=ccpt_get_difficulty_options_html(); ?>
         </select>
     </div>
 
@@ -583,18 +590,31 @@ function ccpt_article_category_add_form_fields( $taxonomy ){
 add_action( 'article_category_edit_form_fields', 'ccpt_article_category_edit_form_fields', 10, 2 );
 
 function ccpt_article_category_edit_form_fields( $term, $taxonomy ){
-    $value = get_term_meta( $term->term_id, 'ccpt_category_test', true );
+    $course_test = get_term_meta( $term->term_id, 'ccpt_course_test', true );
+    $course_difficulty = get_term_meta( $term->term_id, 'ccpt_course_difficulty', true );
 
     ?>
     
     <tr class="form-field">
         <th>
-            <label for="category-test"><?=__( 'Тест категорії', 'ce-crypto' ); ?></label>
+            <label for="course-test"><?=__( 'Тест курсу', 'ce-crypto' ); ?></label>
         </th>
         
         <td>
-            <select name="category_test" id="category-test" style="width: 100%;">
-                <?=ccpt_get_test_options_html( $value ); ?>
+            <select name="course_test" id="course-test" style="width: 100%;">
+                <?=ccpt_get_test_options_html( $course_test ); ?>
+            </select>
+        </td>
+    </tr>
+
+    <tr class="form-field">
+        <th>
+            <label for="course-difficulty"><?=__( 'Рівень важкості', 'ce-crypto' ); ?></label>
+        </th>
+        
+        <td>
+            <select name="course_difficulty" id="course-difficulty" style="width: 100%;">
+                <?=ccpt_get_difficulty_options_html( $course_difficulty ); ?>
             </select>
         </td>
     </tr>
@@ -607,10 +627,12 @@ add_action( 'created_article_category', 'ccpt_save_article_category_fields' );
 add_action( 'edited_article_category', 'ccpt_save_article_category_fields' );
 
 function ccpt_save_article_category_fields( $term_id ){
-    $test_id = sanitize_text_field( $_POST['category_test'] );
+    $test_id = sanitize_text_field( $_POST['course_test'] );
+    $difficulty = sanitize_text_field( $_POST['course_difficulty'] );
 
     update_post_meta( $test_id, 'ccpt_course', $term_id );
-    update_term_meta( $term_id, 'ccpt_category_test', $test_id );
+    update_term_meta( $term_id, 'ccpt_course_test', $test_id );
+    update_term_meta( $term_id, 'ccpt_course_difficulty', $difficulty );
 }
 
 
@@ -649,6 +671,8 @@ function ccpt_articles_archive_filters_query( $query ){
             'post_date'         => 'DESC'
         ) );
 
+        $meta_query_filters = [];
+
         if( isset( $_GET['page'] ) ){
             $query->set( 'paged', $_GET['page'] );
         }
@@ -656,14 +680,22 @@ function ccpt_articles_archive_filters_query( $query ){
         if( isset( $_GET['time'] ) ){
             $values = json_decode( $_GET['time'] );
     
-            $query->set( 'meta_query', [
-                array(
-                    'key'       => '_reading_time',
-                    'value'     => $values,
-                    'compare'   => 'BETWEEN',
-                    'type'      => 'NUMERIC'
-                )
-            ] );
+            $meta_query_filters[] = array(
+                'key'       => '_reading_time',
+                'value'     => $values,
+                'compare'   => 'BETWEEN',
+                'type'      => 'NUMERIC'
+            );
+        }
+
+        if( isset( $_GET['difficulty'] ) ){
+            $difficulties = explode( ',', $_GET['difficulty'] );
+
+            $meta_query_filters[] = array(
+                'key'       => '_difficulty',
+                'value'     => $difficulties,
+                'compare'   => 'IN'
+            );
         }
     
         $tax_query_filters = [];
@@ -677,20 +709,15 @@ function ccpt_articles_archive_filters_query( $query ){
             );
         }
     
-        if( isset( $_GET['difficulty'] ) ){
-            $tax_query_filters[] = array(
-                'taxonomy'  => 'article_difficulty',
-                'terms'     => explode( ',', $_GET['difficulty'] ),
-                'operator'  => 'IN',
-                'relation'  => 'OR'
-            );
-        }
-    
         if( count( $tax_query_filters ) ){
             $query->set( 'tax_query', array(
                 'relation'  => 'AND',
                 $tax_query_filters
             ) );
+        }
+
+        if( count( $meta_query_filters ) ){
+            $query->set( 'meta_query', $meta_query_filters );
         }
     }
 }
