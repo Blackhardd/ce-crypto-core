@@ -465,6 +465,7 @@ add_action( 'save_post_article', 'ccpt_save_post_article', 10, 3 );
 
 function ccpt_save_post_article( $post_id, $post, $update ){
     if( !$update ){
+        update_post_meta( $post_id, '_sticky_archive', 0 );
         update_post_meta( $post_id, 'ccpt_views', 0 );
         update_post_meta( $post_id, 'ccpt_likes', 0 );
     }
@@ -552,6 +553,13 @@ add_action( 'pre_get_posts', 'ccpt_articles_archive_filters_query' );
 
 function ccpt_articles_archive_filters_query( $query ){
     if( !is_admin() && isset( $query->query_vars['post_type'] ) && $query->query_vars['post_type'] === 'article' ){
+        $query->set( 'meta_key', '_sticky_archive' );
+
+        $query->set( 'orderby', array(
+            'meta_value_num'    => 'DESC',
+            'post_date'         => 'DESC'
+        ) );
+
         if( isset( $_GET['page'] ) ){
             $query->set( 'paged', $_GET['page'] );
         }
