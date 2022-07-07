@@ -711,3 +711,8 @@ function ccpt_disable_admin_bar( $show_admin_bar ){
 
     return $show_admin_bar;
 }
+
+
+// Disable default password changing email notification.
+
+add_filter( 'send_password_change_email', '__return_false' );
