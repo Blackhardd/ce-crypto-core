@@ -152,7 +152,8 @@ function ccpt_reset_user_password( $user_email ){
             <p>Слава Україні!</p>
         ",
         [
-            'Content-Type: text/html; charset=UTF-8'
+            'Content-Type: text/html; charset=UTF-8',
+            sprintf( "From: %s <%s>", get_bloginfo( 'name' ), get_option( 'admin_email' ) )
         ]
     );
 }
