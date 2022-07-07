@@ -37,10 +37,10 @@ function ccpt_get_articles( $numberposts = -1, $ids = [] ){
  * @param string|integer $course_id
  * @return WP_Query
  */
-function ccpt_get_articles_category_query(){
+function ccpt_get_articles_category_query( $posts_per_page = 2 ){
     $args = array(
         'post_type'         => 'article',
-        'posts_per_page'    => 2
+        'posts_per_page'    => $posts_per_page
     );
 
     if( isset( $_GET['page'] ) ){
@@ -95,6 +95,29 @@ function ccpt_get_articles_category_query(){
     $query = new WP_Query( $args );
 
     return $query;
+}
+
+
+/**
+ * Get articles by course.
+ * 
+ * @param string|integer $course_id
+ * @return WP_Post[]
+ */
+function ccpt_get_course_articles( $course_id ){
+    $articles = get_posts( array(
+        'post_type'     => 'article',
+        'numberposts'   => -1,
+        'tax_query'     => array(
+            array(
+                'taxonomy'  => 'article_category',
+                'field'     => 'id',
+                'terms'     => $course_id
+            )
+        )
+    ) );
+
+    return $articles;
 }
 
 
@@ -179,11 +202,13 @@ function ccpt_get_recent_articles( $exclude = [], $numberposts = 5, $category_id
     }
 
     if( $category_id ){
-        $args['tax_query'] = array(
-            'taxonomy'  => 'article_category',
-            'field'     => 'id',
-            'terms'     => $category_id
-        );
+        $args['tax_query'] = [
+            array(
+                'taxonomy'  => 'article_category',
+                'field'     => 'id',
+                'terms'     => $category_id
+            )
+        ];
     }
 
     return wp_get_recent_posts( $args, 'OBJECT' );
@@ -252,13 +277,29 @@ function ccpt_get_category_most_recent_article( $category_id ){
  * 
  * @return WP_Term[]
  */
-function ccpt_get_article_categories( $hide_empty = true ){
+function ccpt_get_article_categories( $hide_empty = true, $supress_filters = true ){
     $args = array(
         'taxonomy'      => 'article_category',
         'hide_empty'    => $hide_empty
     );
 
-    return get_terms( $args );
+    if( !$supress_filters ){
+        if( !empty( $_GET['theme'] ) ){
+            $themes = array_map( 'intval', explode( ',', $_GET['theme'] ) );
+
+            $args['meta_query'] = [
+                array(
+                    'key'       => 'ccpt_themes',
+                    'value'     => $themes,
+                    'compare'   => 'IN'
+                )
+            ];
+        }
+    }
+
+    $categories = get_terms( $args );
+
+    return $categories;
 }
 
 
@@ -336,12 +377,16 @@ function ccpt_get_article_category_name( $term_id ){
  * Get article category test ID.
  * 
  * @param string|integer $post_id
- * @return integer
+ * @return integer|boolean
  */
 function ccpt_get_article_category_test( $post_id ){
     $terms = get_the_terms( $post_id, 'article_category' );
 
-    return intval( get_term_meta( $terms[0]->term_id, 'ccpt_category_test', true ) );
+    if( $test_id = get_term_meta( $terms[0]->term_id, 'ccpt_category_test', true ) ){
+        return intval( $test_id );
+    }
+
+    return false;
 }
 
 
@@ -459,6 +504,39 @@ function ccpt_get_likes( $post_id = 0 ){
 }
 
 
+/**
+ * Update course themes.
+ * 
+ * @param string|integer $course_id
+ * @return string[]
+ */
+function ccpt_update_course_themes( $course_id ){
+    $articles = ccpt_get_course_articles( $course_id );
+
+    $theme_ids = [];
+
+    foreach( $articles as $article ){
+        $themes = wp_get_post_terms( $article->ID, 'article_tag' );
+
+        if( !empty( $themes ) ){
+            foreach( $themes as $theme ){
+                $theme_ids[] = $theme->term_id;
+            }
+        }
+    }
+
+    $theme_ids = array_unique( $theme_ids );
+
+    delete_term_meta( $course_id, 'ccpt_themes' );
+
+    foreach( $theme_ids as $theme_id ){
+        add_term_meta( $course_id, 'ccpt_themes', $theme_id );
+    }
+
+    return $theme_ids;
+}
+
+
 // Add article post meta on creating article.
 
 add_action( 'save_post_article', 'ccpt_save_post_article', 10, 3 );
@@ -468,6 +546,17 @@ function ccpt_save_post_article( $post_id, $post, $update ){
         update_post_meta( $post_id, '_sticky_archive', 0 );
         update_post_meta( $post_id, 'ccpt_views', 0 );
         update_post_meta( $post_id, 'ccpt_likes', 0 );
+    }
+}
+
+
+// Add course themes meta.
+
+add_action( 'save_post_article', 'ccpt_add_course_themes', 10, 3 );
+
+function ccpt_add_course_themes( $post_id, $post, $update ){
+    if( $course_id = ccpt_get_article_category( $post_id ) ){
+        ccpt_update_course_themes( $course_id->term_id );
     }
 }
 
