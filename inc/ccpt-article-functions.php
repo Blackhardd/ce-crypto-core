@@ -216,9 +216,7 @@ function ccpt_search_articles_by_title( $needle, $numberposts = 5 ){
         'search_title'  => $needle,
         'numberposts'   => $numberposts
     ) );
-
-    write_log( $results );
-
+    
     $output = [];
 
     if( $query->have_posts() ){

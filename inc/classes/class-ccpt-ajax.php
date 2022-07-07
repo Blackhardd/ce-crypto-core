@@ -22,6 +22,7 @@ class CCPT_AJAX {
         $events = array(
             'register',
             'login',
+            'search',
             'search_articles',
             'save_profile',
             'facebook_auth',
@@ -66,6 +67,41 @@ class CCPT_AJAX {
         }
 
         ccpt_send_ajax_response( 'redirect', home_url() );
+    }
+
+
+    public static function search(){
+        $results = ccpt_search_posts_by_title( $_POST['keyword'], $_POST['post_type'] );
+
+        $html = '';
+
+        if( !empty( $results ) ){
+            switch( $_POST['post_type'] ){
+                case 'term':
+                    foreach( $results as $post ){
+                        $html .= "<a>{$post['title']}</a>";
+                    }
+                    break;
+                default:
+                    foreach( $results as $post ){
+                        $html .= "<a href='{$post['link']}'>{$post['title']}</a>";
+                    }
+                    break;
+            }
+            
+            ccpt_send_ajax_response( 'html', $html, array(
+                'have_results'  => true
+            ) );
+        }
+        else{
+            $html .= "<div class='nothing-found nothing-found--header-search'>";
+            $html .= __( 'За запитом нічого не знайдено.', 'ce-crypto' );
+            $html .= "</div>";
+
+            ccpt_send_ajax_response( 'html', $html, array(
+                'have_results'  => false
+            ) );
+        }
     }
 
 

@@ -49,11 +49,15 @@ function ccpt_get_english_alphabet(){
  * 
  * @return string[]
  */
-function ccpt_get_alphabet_filter_items(){
+function ccpt_get_alphabet_filter_items( $flat_output = false ){
     $ukrainian_alphabet = ccpt_get_ukrainian_alphabet();
     $english_alphabet = ccpt_get_english_alphabet();
 
     $both_alphabets = array_merge( $ukrainian_alphabet, $english_alphabet );
+
+    if( $flat_output ){
+        return $both_alphabets;
+    }
 
     $output = [
         array_slice( $both_alphabets, 0, count( $ukrainian_alphabet ), true ),
@@ -114,6 +118,41 @@ function cctp_get_test_query_object( $numberposts = 10 ){
  */
 function cctp_get_term_query_object( $numberposts = 10 ){
     return cctp_get_post_query_object( 'terms', $numberposts );
+}
+
+
+/**
+ * Search posts by title.
+ * 
+ * @param string $needle
+ * @param string $post_type
+ * @param string|integer $numberposts
+ * @return string[]
+ */
+function ccpt_search_posts_by_title( $needle, $post_type, $numberposts = 5 ){
+    $query = new WP_Query( array(
+        'post_type'     => $post_type,
+        'search_title'  => $needle,
+        'numberposts'   => $numberposts
+    ) );
+    
+    $output = [];
+
+    if( $query->have_posts() ){
+        while( $query->have_posts() ){
+            $query->the_post();
+
+            $output[] = array(
+                'id'        => get_the_ID(),
+                'title'     => get_the_title(),
+                'link'      => get_permalink( get_the_ID() )
+            );
+        }
+    }
+
+    wp_reset_postdata();
+
+    return $output;
 }
 
 
