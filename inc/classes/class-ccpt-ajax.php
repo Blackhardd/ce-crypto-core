@@ -22,6 +22,7 @@ class CCPT_AJAX {
         $events = array(
             'register',
             'login',
+            'lost_password',
             'search',
             'search_articles',
             'save_profile',
@@ -67,6 +68,17 @@ class CCPT_AJAX {
         }
 
         ccpt_send_ajax_response( 'redirect', home_url() );
+    }
+
+
+    public static function lost_password(){
+        $is_password_updated = ccpt_reset_user_password( $_POST['email'] );
+
+        if( is_wp_error( $is_password_updated ) ){
+            ccpt_send_ajax_response( 'error', $is_password_updated->get_error_message() );
+        }
+
+        ccpt_send_ajax_response( 'success', __( 'Новий пароль було надіслано вам на пошту. Слава Україні!', 'ce-cerypto' ) );
     }
 
 

@@ -121,6 +121,44 @@ function ccpt_update_profile( $user_id, $fields = array() ){
 
 
 /**
+ * Reset user password password.
+ * 
+ * @param string|integer $user_email
+ * @return boolean
+ */
+function ccpt_reset_user_password( $user_email ){
+    if( !is_email( $user_email ) )
+        return new WP_Error( 'save-profile-error-invalid-email', __( 'Будь ласка, надайте дійсну адресу електронної пошти.', 'ce-crypto' ) );
+        
+    if( !email_exists( $user_email ) )
+        return new WP_Error( 'reset-password-error-email-not-exists', __( 'На таку адресу електронної пошти не зареєстровано аккаунт.', 'ce-crypto' ) );
+
+    $user = get_user_by( 'email', $user_email );
+
+    $password = wp_generate_password();
+
+    $is_updated = boolval( wp_update_user( array(
+        'ID'        => $user->ID,
+        'user_pass' => $password
+    ) ) );
+
+    if( !$is_updated )
+        return false;
+    
+    return wp_mail( $user_email, sprintf( __( '%s %s Зміна паролю', 'ce-crypto' ), get_bloginfo( 'name' ), '|' ),
+        "
+            <h1>Добрий день!</h1>
+            <p>Ваш пароль був тільки що змінений на - <b>{$password}</b></p>
+            <p>Слава Україні!</p>
+        ",
+        [
+            'Content-Type: text/html; charset=UTF-8'
+        ]
+    );
+}
+
+
+/**
  * Update social network ID.
  * 
  * @param string $social

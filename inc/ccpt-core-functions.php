@@ -418,6 +418,15 @@ function ccpt_query_vars( $vars ){
 }
 
 
+// Filter lost password URL.
+
+add_filter( 'lostpassword_url', 'ccpt_lost_password_url', 10, 0 );
+
+function ccpt_lost_password_url(){
+    return '#modal-lost-password';
+}
+
+
 if( !function_exists( 'write_log' ) ){
     function write_log( $log ){
         if( WP_DEBUG === true ){
