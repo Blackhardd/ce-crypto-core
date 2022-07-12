@@ -399,7 +399,7 @@ function ccpt_wp_query_search_by_title( $where, $wp_query ){
     global $wpdb;
 
     if( $title = $wp_query->get( 'search_title' ) ){
-        $where .= " AND " . $wpdb->posts . ".post_title LIKE '" . esc_sql( $wpdb->esc_like( $title ) ) . "%'";
+        $where .= " AND " . $wpdb->posts . ".post_title LIKE '%" . esc_sql( $wpdb->esc_like( $title ) ) . "%'";
     }
 
     return $where;
