@@ -69,6 +69,27 @@ function ccpt_get_alphabet_filter_items( $flat_output = false ){
 
 
 /**
+ * Send notification to admin and additional recipients.
+ * 
+ * @param string $theme
+ * @param string $message
+ * @return boolean
+ */
+function ccpt_send_admins_notification( $theme, $message ){
+    $admin_email = get_option( 'admin_email' );
+    $additional_recipients = explode( ',', get_theme_mod( 'notification_recipients' ) );
+
+    $recipients = [$admin_email];
+
+    if( !empty( $additional_recipients ) ){
+        $recipients = array_merge( $recipients, $additional_recipients );
+    }
+
+    return wp_mail( $recipients, $theme, $message, array( 'Content-Type'  => 'text/html; charset=UTF-8' ) );
+}
+
+
+/**
  * Get query object for specified post type.
  * 
  * @param string $post_type
