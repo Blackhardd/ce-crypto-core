@@ -138,13 +138,20 @@ class CCPT_AJAX {
 
 
     public static function save_profile(){
+        $avatar_attachment_id = false;
+
+        if( isset( $_FILES ) ){
+            $avatar_attachment_id = media_handle_upload( 'avatar', 0 );
+        }
+
         $user_id = ccpt_update_profile( wp_get_current_user()->ID, array(
             'full_name'     => $_POST['full_name'],
             'email'         => $_POST['email'],
             'phone'         => $_POST['phone'],
             'password'      => $_POST['password'],
             'twitter'       => $_POST['twitter'],
-            'telegram'      => $_POST['telegram']
+            'telegram'      => $_POST['telegram'],
+            'avatar'        => $avatar_attachment_id
         ) );
 
         if( is_wp_error( $user_id ) ){

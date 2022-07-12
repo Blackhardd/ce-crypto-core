@@ -116,6 +116,9 @@ function ccpt_update_profile( $user_id, $fields = array() ){
     if( !empty( $fields['telegram'] ) && $fields['telegram'] !== $profile['telegram'] )
         update_user_meta( $user_id, 'ccpt_telegram_username', $fields['telegram'] );
 
+     if( !empty( $fields['avatar'] ) && !is_wp_error( $fields['avatar'] ) )
+        update_user_meta( $user_id, 'ccpt_avatar', $fields['avatar'] );
+
     return wp_update_user( $fields_to_update );
 }
 
@@ -199,7 +202,7 @@ function ccpt_set_avatar_from_url( $user_id, $url ){
     }
 
     if( $avatar_id && !is_wp_error( $avatar_id ) ){
-        update_user_meta( $user_id, 'ccpt_avatar', $avatar_id, true );
+        update_user_meta( $user_id, 'ccpt_avatar', $avatar_id );
     }
     
     return $avatar_id;
@@ -391,10 +394,10 @@ function ccpt_get_user_course_data( $user_id = 0, $course_id ){
 
     $status = 'unbegun';
 
-    if( $progress > 0 && $progress <= 100 && $test_result['score'] < 85 ){
+    if( $progress > 0 && $progress <= 100 && $test_result && $test_result['score'] < 85 ){
         $status = 'in-progress';
     }
-    else if( $progress === 100 && $test_result['score'] > 85 ){
+    else if( $progress === 100 && $test_result && $test_result['score'] > 85 ){
         $status = 'completed';
     }
 
