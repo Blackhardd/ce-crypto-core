@@ -37,6 +37,27 @@ class CCPT_Customizer {
      * @param WP_Customize_Manager $wp_customize
      */
     private function add_socials_login_section( $wp_customize ){
+        // Notifications
+
+        $wp_customize->add_section( 'notification_recipients_section', array(
+            'title'         => __( 'Повідомлення', 'ce-crypto' ),
+            'priority'      => 160,
+            'capability'    => 'customize'
+        ) );
+
+        $wp_customize->add_setting( 'notification_recipients', array( 'default' => '' ) );
+
+        $wp_customize->add_control( 'notification_recipients', array(
+            'id'            => 'notification_recipients_control',
+            'label'         => __( 'Отримувачі', 'ce-crypto' ),
+            'description'   => __( 'Можете вказати декілька отримувачів розділивши їх адреси комами.', 'ce-crypto' ),
+            'type'          => 'textarea',
+            'section'       => 'notification_recipients_section'
+        ) );
+
+
+        // Socials login
+
         $wp_customize->add_panel( 'socials_login_panel', array(
             'title'         => __( 'Вхід через соціальні мережі', 'ce-crypto' ),
             'priority'      => 160,
@@ -49,9 +70,7 @@ class CCPT_Customizer {
             'panel'         => 'socials_login_panel'
         ) );
 
-        $wp_customize->add_setting( 'facebook_app_id', array(
-            'default'       => '',
-        ) );
+        $wp_customize->add_setting( 'facebook_app_id', array( 'default' => '' ) );
 
         $wp_customize->add_control( 'facebook_app_id', array(
             'id'            => 'facebook_app_id_control',
@@ -65,9 +84,7 @@ class CCPT_Customizer {
             'panel'         => 'socials_login_panel'
         ) );
 
-        $wp_customize->add_setting( 'google_client_id', array(
-            'default'       => '',
-        ) );
+        $wp_customize->add_setting( 'google_client_id', array( 'default' => '' ) );
 
         $wp_customize->add_control( 'google_client_id', array(
             'id'            => 'google_client_id_control',
@@ -75,9 +92,7 @@ class CCPT_Customizer {
             'section'       => 'socials_login_google_section'
         ) );
 
-        $wp_customize->add_setting( 'google_client_secret', array(
-            'default'       => '',
-        ) );
+        $wp_customize->add_setting( 'google_client_secret', array( 'default' => '' ) );
 
         $wp_customize->add_control( 'google_client_secret', array(
             'id'            => 'google_client_secret_control',
