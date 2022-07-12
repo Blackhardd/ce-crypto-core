@@ -188,7 +188,17 @@ class CCPT_AJAX {
 
 
     public static function contact(){
-        ccpt_send_ajax_response( 'success', __( 'Відправка форми успішна.', 'ce-crypto' ) );
+        $theme = __( 'Заявка з контактної форми', 'ce-crypto' );
+        $message = "
+            <h1>Заявка з контактної форми</h1>
+            <p><b>Ім'я:</b> {$_POST['name']}<br/><b>Номер телефону:</b> {$_POST['phone']}</p>
+        ";
+
+        if( ccpt_send_admins_notification( $theme, $message ) ){
+            ccpt_send_ajax_response( 'success', __( 'Відправка форми успішна.', 'ce-crypto' ) );
+        }
+        
+        ccpt_send_ajax_response( 'error', __( 'Щось пішло не так. Спробуйте ще раз.', 'ce-crypto' ) );
     }
 
 
