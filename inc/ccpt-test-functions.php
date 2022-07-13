@@ -85,6 +85,21 @@ function ccpt_get_test_course_name( $test_id ){
 
 
 /**
+ * Get test course ID.
+ * 
+ * @param string|integer $test_id
+ * @return boolean|integer
+ */
+function ccpt_get_test_course_id( $test_id ){
+    if( !empty( $course_id = get_post_meta( $test_id, 'ccpt_course', true ) ) ){
+        return $course_id;
+    }
+
+    return false;
+}
+
+
+/**
  * Extract correct answers from test data.
  * 
  * @param mixed[]
@@ -128,6 +143,7 @@ function ccpt_get_test_result( $user_id = 0, $test_id = 0 ){
 
     return array(
         'course'    => ccpt_get_test_course_name( $test_id ),
+        'course_id' => ccpt_get_test_course_id( $test_id ),
         'result'    => $result,
         'score'     => $score
     );
