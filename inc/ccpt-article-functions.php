@@ -37,7 +37,7 @@ function ccpt_get_articles( $numberposts = -1, $ids = [] ){
  * @param string|integer $course_id
  * @return WP_Query
  */
-function ccpt_get_articles_category_query( $posts_per_page = 2 ){
+function ccpt_get_articles_category_query( $posts_per_page = 12 ){
     $args = array(
         'post_type'         => 'article',
         'posts_per_page'    => $posts_per_page

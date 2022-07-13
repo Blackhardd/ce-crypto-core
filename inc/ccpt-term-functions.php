@@ -44,7 +44,7 @@ add_action( 'pre_get_posts', 'ccpt_modify_terms_archive_query' );
 
 function ccpt_modify_terms_archive_query( $query ){
     if( !is_admin() && isset( $query->query_vars['post_type'] ) && $query->query_vars['post_type'] === 'term' ){
-        $query->set( 'posts_per_page', 3 );
+        $query->set( 'posts_per_page', 12 );
 
         if( isset( $_GET['letter'] ) ){
             $query->set( 'meta_query', [
