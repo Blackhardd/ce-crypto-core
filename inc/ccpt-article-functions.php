@@ -265,10 +265,31 @@ function ccpt_search_articles_by_title( $needle, $numberposts = 5 ){
  * Get most recent article from category.
  * 
  * @param int $category_id
- * @return WP_Post
+ * @return boolean|WP_Post
  */
 function ccpt_get_category_most_recent_article( $category_id ){
-    return ccpt_get_category_recent_articles( $category_id, 1 )[0];
+    if( !empty( $recent_articles = ccpt_get_category_recent_articles( $category_id, 1 ) ) ){
+        return $recent_articles[0];
+    }
+
+    return false;
+}
+
+
+/**
+ * Get last article from category.
+ * 
+ * @param int $category_id
+ * @return boolean|WP_Post
+ */
+function ccpt_get_category_last_article( $category_id ){
+    $recent_articles = ccpt_get_category_recent_articles( $category_id, 1 );
+
+    if( !empty( $recent_articles ) ){
+        return $recent_articles[count( $recent_articles ) - 1];
+    }
+
+    return false;
 }
 
 
