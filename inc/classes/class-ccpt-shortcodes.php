@@ -34,10 +34,10 @@ class CCPT_Shortcodes {
 
         $term = get_page_by_title( $term_name, 'OBJECT', 'term' );
 
-        if( !is_null( $term ) ){
-            $link = add_query_arg( array( 'item' => $term->ID ), get_post_type_archive_link( 'term' ) );
+        if( !is_null( $term ) && $term->post_content ){
+            $term_description = wp_filter_nohtml_kses( apply_filters( 'the_content', $term->post_content ) );
 
-            return "<a href='{$link}'>{$content}</a>";
+            return "<span class='term'>{$content}<span class='term__desc'><span class='term__desc-inner'>{$term_description}</span></span></span>";
         }
 
         return $content;
