@@ -393,12 +393,12 @@ function ccpt_get_user_course_data( $user_id = 0, $course_id ){
     $test_result = ccpt_get_test_result( 0, $test_id );
 
     $status = 'unbegun';
-
-    if( $progress > 0 && $progress <= 100 && $test_result && $test_result['score'] < 85 ){
-        $status = 'in-progress';
-    }
-    else if( $progress === 100 && $test_result && $test_result['score'] > 85 ){
+    
+    if( $progress === 100 && $test_result && $test_result['score'] > 85 ){
         $status = 'completed';
+    }
+    else if( $progress > 0 ){
+        $status = 'in-progress';
     }
 
     $output = array(
