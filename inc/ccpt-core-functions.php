@@ -379,12 +379,35 @@ function ccpt_get_difficulties(){
 
 
 /**
+ * Get course difficulties.
+ * 
+ * @return string[]
+ */
+function ccpt_get_difficulties_i18n(){
+    $difficulties = ccpt_get_difficulties();
+
+    $output = array();
+
+    foreach( $difficulties as $key => $title ){
+        if( $title_i18n = get_option( 'difficulty_' . $key . '_title' ) ){
+            $output[$key] = $title_i18n;
+        }
+        else{
+            $output[$key] = $title;
+        }
+    }
+
+    return $output;
+}
+
+
+/**
  * Get course difficulty choices.
  * 
  * @return string[]
  */
 function ccpt_get_difficulty_choices(){
-    $difficulties = ccpt_get_difficulties();
+    $difficulties = ccpt_get_difficulties_i18n();
 
     $difficulties = array_merge( array( '' => __( 'Оберіть важкість' ) ), $difficulties );
 
