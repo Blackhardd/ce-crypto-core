@@ -35,9 +35,9 @@ class CCPT_Shortcodes {
         $term = get_page_by_title( $term_name, 'OBJECT', 'term' );
 
         if( !is_null( $term ) && $term->post_content ){
-            $term_description = wp_filter_nohtml_kses( apply_filters( 'the_content', $term->post_content ) );
+            $term_description = ccpt_mb_lcfirst( trim( wp_filter_nohtml_kses( apply_filters( 'the_content', $term->post_content ) ) ) );
 
-            return "<span class='term'>{$content}<span class='term__desc'><span class='term__desc-inner'>{$term_description}</span></span></span>";
+            return "<span class='term'>{$content}<span class='term__desc'><span class='term__arrow'></span><span class='term__desc-inner'><b>{$term->post_title}</b> - {$term_description}</span></span></span>";
         }
 
         return $content;

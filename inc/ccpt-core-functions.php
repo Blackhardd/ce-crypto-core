@@ -412,6 +412,17 @@ function ccpt_get_difficulty_options_html( $value = false ){
 }
 
 
+/**
+ * Make first character of string lowercase.
+ * 
+ * @param string $string
+ * @return string
+ */
+function ccpt_mb_lcfirst( $string ){
+    return mb_strtolower( mb_substr( $string, 0, 1 ) ) . mb_substr( $string, 1 );
+}
+
+
 // Adding to WP_Query search only by title
 
 add_filter( 'posts_where', 'ccpt_wp_query_search_by_title', 10, 2 );
