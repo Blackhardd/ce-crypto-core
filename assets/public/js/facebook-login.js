@@ -8,7 +8,9 @@ jQuery(document).ready(function($){
                 version: 'v2.7'
             })
 
-            $('[data-login="facebook"]').on('click', function(){
+            $('[data-login="facebook"]').on('click', function(e){
+                e.preventDefault()
+
                 FB.login(function(res){
                     if(res.status === 'connected'){
                         FB.api('/me', { fields: 'first_name,last_name,email,picture.type(large)' }, function(response){
@@ -16,6 +18,8 @@ jQuery(document).ready(function($){
                         })
                     }
                 }, { scope: 'public_profile,email' })
+
+                return false
             })
 
             function auth(user_id, first_name, last_name, email, picture){
