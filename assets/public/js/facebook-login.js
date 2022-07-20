@@ -12,7 +12,6 @@ jQuery(document).ready(function($){
                 FB.login(function(res){
                     if(res.status === 'connected'){
                         FB.api('/me', { fields: 'first_name,last_name,email,picture.type(large)' }, function(response){
-                            // console.log(response)
                             auth(response.id, response.first_name, response.last_name, response.email, response.picture.data.url)
                         })
                     }
@@ -28,8 +27,6 @@ jQuery(document).ready(function($){
                 fd.append('last_name', last_name)
                 fd.append('email', email)
                 fd.append('avatar', picture)
-
-                console.log(picture)
 
                 $.ajax({
                     method: 'POST',
