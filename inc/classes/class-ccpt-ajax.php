@@ -181,7 +181,7 @@ class CCPT_AJAX {
         else{
             $user = get_user_by( 'email', $_POST['email'] );
 
-            if( !ccpt_is_user_linked_facebook() ){
+            if( !ccpt_is_user_linked_facebook( $user->ID ) ){
                 ccpt_link_social_id( $user->ID, 'facebook', $_POST['user_id'] );
                 ccpt_set_avatar_from_url( $user->ID, $_POST['avatar'] );
             }
