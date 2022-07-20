@@ -25,7 +25,7 @@ class CCPT_Google_Auth {
             self::$client->setClientSecret( self::$client_secret );
             self::$client->addScope( [Google_Service_Oauth2::USERINFO_EMAIL, Google_Service_Oauth2::USERINFO_PROFILE] );
             self::$client->setAccessType( 'offline' );
-            self::$client->setPrompt( 'select_account' );
+            self::$client->setPrompt( 'consent' );
             self::$client->setRedirectUri( self::$redirect_url );
 
             self::authenticate();
