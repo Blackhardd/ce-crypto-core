@@ -142,6 +142,7 @@ class CCPT_AJAX {
 
         if( isset( $_FILES ) ){
             $avatar_attachment_id = media_handle_upload( 'avatar', 0 );
+            update_post_meta( $avatar_attachment_id, '_is_avatar', true );
         }
 
         $user_id = ccpt_update_profile( wp_get_current_user()->ID, array(
