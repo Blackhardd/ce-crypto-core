@@ -482,6 +482,53 @@ function ccpt_lost_password_url(){
 }
 
 
+// Remove avatars from media gallery
+
+add_filter( 'ajax_query_attachments_args', 'ccpt_hide_avatars_from_media_overlay_view' );
+
+function ccpt_hide_avatars_from_media_overlay_view( $args ) {
+    if( !is_admin() ){
+        return $args;
+    }
+
+    $args['meta_query'] = [
+        array(
+            'key'     => '_is_avatar',
+            'compare' => 'NOT EXISTS',
+        )
+    ];
+   
+    return $args;
+}
+
+
+add_action( 'pre_get_posts', 'ccpt_hide_avatars_from_media_gallery' );
+
+function ccpt_hide_avatars_from_media_gallery( $query ){
+    if( !is_admin() ){
+        return;
+    }
+
+    if( !$query->is_main_query() ){
+        return;
+    }
+
+    $screen = get_current_screen();
+    if( !$screen || 'upload' !== $screen->id || 'attachment' !== $screen->post_type ){
+        return;
+    }
+    
+    $query->set( 'meta_query', [
+        array(
+            'key'     => '_is_avatar',
+            'compare' => 'NOT EXISTS',
+        )
+    ] );
+
+    return;
+}
+
+
 if( !function_exists( 'write_log' ) ){
     function write_log( $log ){
         if( WP_DEBUG === true ){

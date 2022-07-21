@@ -202,6 +202,7 @@ function ccpt_set_avatar_from_url( $user_id, $url ){
     }
 
     if( $avatar_id && !is_wp_error( $avatar_id ) ){
+        update_post_meta( $avatar_id, '_is_avatar', true );
         update_user_meta( $user_id, 'ccpt_avatar', $avatar_id );
     }
     
