@@ -720,3 +720,31 @@ function ccpt_disable_admin_bar( $show_admin_bar ){
 // Disable default password changing email notification.
 
 add_filter( 'send_password_change_email', '__return_false' );
+
+
+// Adding additional fields to user profile.
+
+add_action( 'show_user_profile', 'ccpt_user_profile_fields' );
+add_action( 'edit_user_profile', 'ccpt_user_profile_fields' );
+
+function ccpt_user_profile_fields( $user ){ ?>
+
+    <h3><?=__( 'Контакти', 'ce-crypto' ); ?></h3>
+
+    <table class="form-table">
+        <tr>
+            <th><label for="telegram"><?=__( 'Telegram', 'ce-crypto' ); ?></label></th>
+            <td>
+                <input type="text" name="telegram" id="telegram" value="<?=esc_attr( get_user_meta( $user->ID, 'ccpt_telegram_username', true ) ); ?>" class="regular-text" readonly />
+            </td>
+        </tr>
+        <tr>
+            <th><label for="twitter"><?=__( 'Twitter', 'ce-crypto' ); ?></label></th>
+            <td>
+                <input type="text" name="twitter" id="twitter" value="<?=esc_attr( get_user_meta( $user->ID, 'ccpt_twitter_username', true ) ); ?>" class="regular-text" readonly />
+            </td>
+        </tr>
+    </table>
+
+    <?php
+}
