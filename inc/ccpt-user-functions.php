@@ -156,7 +156,7 @@ function ccpt_reset_user_password( $user_email ){
         ",
         [
             'Content-Type: text/html; charset=UTF-8',
-            sprintf( "From: %s <%s>", get_bloginfo( 'name' ), get_option( 'admin_email' ) )
+            sprintf( "From: %s <%s>", get_bloginfo( 'name' ), 'info@tsecrypto.com' )
         ]
     );
 }
@@ -747,4 +747,15 @@ function ccpt_user_profile_fields( $user ){ ?>
     </table>
 
     <?php
+}
+
+
+// Removing default contact method fields.
+
+// add_filter( 'user_contactmethods', 'ccpt_remove_default_contact_methods' );
+
+function ccpt_remove_default_contact_methods( $methods ){
+    unset( $methods['facebook'], $methods['instagram'], $methods['linkedin'], $methods['myspace'], $methods['pinterest'], $methods['soundcloud'], $methods['twitter'], $methods['youtube'] );
+
+    return $methods;
 }

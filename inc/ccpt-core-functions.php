@@ -85,7 +85,7 @@ function ccpt_send_admins_notification( $theme, $message ){
         $recipients = array_merge( $recipients, $additional_recipients );
     }
 
-    return wp_mail( $recipients, $theme, $message, array( 'Content-Type'  => 'text/html; charset=UTF-8' ) );
+    return wp_mail( $recipients, $theme, $message, ['Content-Type: text/html; charset=UTF-8'] );
 }
 
 
