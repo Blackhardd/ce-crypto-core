@@ -203,7 +203,7 @@ function ccpt_unlock_test( $user_id = 0, $test_id = 0 ){
         $test_id = get_the_ID();
     }
     else if( $test_id === 0 && is_tax( 'article_category' ) ){
-        $test_id = get_term_meta( get_queried_object()->term_id, 'ccpt_category_test', true );
+        $test_id = get_term_meta( get_queried_object()->term_id, 'ccpt_course_test', true );
     }
         
 
