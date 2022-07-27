@@ -41,7 +41,7 @@ class CCPT_Google_Auth {
         if( isset( $_GET['code'] ) ){
             $access_token = false;
 
-            if( isset( $_COOKIE['g_access_token'] ) ){
+            if( isset( $_COOKIE['g_access_token'] ) && false ){
                 $cookie_token = json_decode( $_COOKIE['g_access_token'], true );
 
                 self::$client->setAccessToken( $cookie_token );
