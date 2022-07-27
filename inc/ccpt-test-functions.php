@@ -129,7 +129,7 @@ function ccpt_extract_correct_answers( $data ){
  */
 function ccpt_get_test_result( $user_id = 0, $test_id = 0 ){
     if( $user_id === 0 )
-        $user_id = get_current_user()->ID;
+        $user_id = wp_get_current_user()->ID;
 
     if( $test_id === 0 && is_singular( 'test' ) )
         $test_id = get_the_ID();
@@ -160,7 +160,7 @@ function ccpt_get_test_result( $user_id = 0, $test_id = 0 ){
  */
 function ccpt_save_test_result( $user_id = 0, $test_id, $result ){
     if( $user_id === 0 )
-        $user_id = get_current_user()->ID;
+        $user_id = wp_get_current_user()->ID;
 
     $is_user_tests_list_updated = ccpt_maybe_update_user_tests_list( 0, $test_id );
     $is_test_score_updated = boolval( update_user_meta( $user_id, 'ccpt_test_score_' . $test_id, $result['score'] ) );
@@ -179,7 +179,7 @@ function ccpt_save_test_result( $user_id = 0, $test_id, $result ){
  */
 function ccpt_lock_test( $user_id = 0, $test_id = 0 ){
     if( $user_id === 0 )
-        $user_id = get_current_user()->ID;
+        $user_id = wp_get_current_user()->ID;
 
     if( $test_id === 0 )
         $test_id = get_the_ID();
@@ -197,7 +197,7 @@ function ccpt_lock_test( $user_id = 0, $test_id = 0 ){
  */
 function ccpt_unlock_test( $user_id = 0, $test_id = 0 ){
     if( $user_id === 0 )
-        $user_id = get_current_user()->ID;
+        $user_id = wp_get_current_user()->ID;
 
     if( $test_id === 0 && !is_tax( 'article_category' ) ){
         $test_id = get_the_ID();
@@ -220,7 +220,7 @@ function ccpt_unlock_test( $user_id = 0, $test_id = 0 ){
  */
 function ccpt_is_test_locked( $user_id = 0, $test_id = 0 ){
     if( $user_id === 0 )
-        $user_id = get_current_user()->ID;
+        $user_id = wp_get_current_user()->ID;
 
     if( $test_id === 0 )
         $test_id = get_the_ID();
