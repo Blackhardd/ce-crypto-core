@@ -390,7 +390,7 @@ function ccpt_get_user_course_data( $user_id = 0, $course_id ){
 
     // Test
 
-    $test_id = intval( get_term_meta( $course_id, 'ccpt_category_test', true ) );
+    $test_id = intval( get_term_meta( $course_id, 'ccpt_course_test', true ) );
     $test_result = ccpt_get_test_result( 0, $test_id );
 
     $status = 'unbegun';

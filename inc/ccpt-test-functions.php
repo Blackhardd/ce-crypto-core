@@ -227,8 +227,6 @@ function ccpt_is_test_locked( $user_id = 0, $test_id = 0 ){
 
     $status = get_user_meta( $user_id, 'ccpt_test_status_' . $test_id, true );
 
-    var_dump( $status );
-
     if( !empty( $status ) && $status === 'locked' ){
         return true;
     }
