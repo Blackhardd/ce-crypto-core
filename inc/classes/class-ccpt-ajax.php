@@ -199,7 +199,7 @@ class CCPT_AJAX {
         $theme = __( 'Заявка з контактної форми', 'ce-crypto' );
         $message = "
             <h1>Заявка з контактної форми</h1>
-            <p><b>Ім'я:</b> {$_POST['name']}<br/><b>Номер телефону:</b> {$_POST['phone']}</p>
+            <p><b>Ім'я:</b> {$_POST['name']}<br/><b>Email:</b> <a href='mailto:{$_POST['email']}'>{$_POST['email']}</p>
         ";
 
         if( ccpt_send_admins_notification( $theme, $message ) ){
